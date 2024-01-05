@@ -19,4 +19,4 @@ class Day01 : Day(2015, 1) {
     }
 }
 
-fun main() = Day.solve(Day01())
+fun main() = Day.solve(Day01(), -3, 1)
