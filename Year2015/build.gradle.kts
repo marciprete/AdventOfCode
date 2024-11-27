@@ -11,6 +11,7 @@ repositories {
 
 dependencies {
     implementation(project(":SwissKnife"))
+    implementation("com.google.code.gson:gson:2.11.0")
     testImplementation("org.jetbrains.kotlin:kotlin-test")
 }
 
