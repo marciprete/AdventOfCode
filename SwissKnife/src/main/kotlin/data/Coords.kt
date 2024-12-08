@@ -30,6 +30,14 @@ class Coords(val x: Int, val y: Int) {
         }
     }
 
+    fun move(to: Coords): Coords {
+        return Coords(x + to.x, y + to.y)
+    }
+
+    fun distance(to: Coords): Coords {
+        return Coords(to.x - this.x, to.y - this.y)
+    }
+
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
@@ -46,6 +54,10 @@ class Coords(val x: Int, val y: Int) {
         var result = x
         result = 31 * result + y
         return result
+    }
+
+    override fun toString(): String {
+        return "($x, $y)"
     }
 }
 

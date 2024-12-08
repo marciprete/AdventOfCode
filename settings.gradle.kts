@@ -4,3 +4,4 @@ plugins {
 rootProject.name = "AdventOfCode"
 include("SwissKnife")
 include("Year2015")
+include("Year2024")
