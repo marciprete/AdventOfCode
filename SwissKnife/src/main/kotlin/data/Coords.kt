@@ -11,7 +11,7 @@ class Coords(val x: Int, val y: Int) {
         fun fromString(str: String): Coords {
             if (str.matches("[0-9]+,[0-9]+".toRegex())) {
                 val split = str.split(",")
-                return Coords(split[0].toInt(), split[1].toInt());
+                return Coords(split[0].toInt(), split[1].toInt())
             }
             throw RuntimeException("Not a coordinate")
         }
