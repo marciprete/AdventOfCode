@@ -1,5 +1,6 @@
 package days
 
+import data.MultiNode
 import it.senape.aoc.utils.Day
 
 
@@ -61,7 +62,7 @@ class Day07 : Day(2024, 7) {
         }
     }
 
-    private fun toMultiTree(root: MultiNode, values: List<Long>) {
+    private fun toMultiTree(root: MultiNode<Long>, values: List<Long>) {
         if (values.isNotEmpty()) {
             val sum = root.key + values[0]
             val prod = root.key * values[0]
@@ -86,23 +87,7 @@ class Day07 : Day(2024, 7) {
 
 }
 
-data class MultiNode(var key: Long, val children: MutableList<MultiNode> = mutableListOf()) {
-    fun add(node: MultiNode) {
-        children.add(node)
-    }
 
-    fun getAllLeafNodes(): Set<MultiNode> {
-        val leafNodes: MutableSet<MultiNode> = HashSet()
-        if (this.children.isEmpty()) {
-            leafNodes.add(this)
-        } else {
-            for (child in this.children) {
-                leafNodes.addAll(child.getAllLeafNodes())
-            }
-        }
-        return leafNodes
-    }
-}
 
 data class Node(val key: Long, var left: Node? = null, var right: Node? = null) {
     override fun toString(): String {

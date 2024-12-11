@@ -100,5 +100,12 @@ enum class Move(val to: Coords) {
     UP_LEFT(Coords(-1, -1)),
     UP_RIGHT(Coords(1, -1)),
     DOWN_LEFT(Coords(-1, 1)),
-    DOWN_RIGHT(Coords(1, 1)),
+    DOWN_RIGHT(Coords(1, 1)), ;
+
+    companion object {
+        fun straightValues(): List<Move> {
+            return listOf(UP, DOWN, LEFT, RIGHT)
+        }
+    }
+
 }
