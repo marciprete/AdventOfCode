@@ -17,6 +17,16 @@ data class MultiNode<T>(var key: T, val children: MutableList<MultiNode<T>> = mu
         return leafNodes
     }
 
+    fun keys(): List<T> {
+        val keys: MutableList<T> = ArrayList()
+        keys.add(this.key)
+        if (children.isNotEmpty()) {
+            for (child in children)
+                keys.addAll(child.keys())
+        }
+        return keys
+    }
+
     fun extractPaths(): List<List<T>> {
         val result = mutableListOf<List<T>>()  // List to store all paths
 
@@ -41,4 +51,41 @@ data class MultiNode<T>(var key: T, val children: MutableList<MultiNode<T>> = mu
 
         return result
     }
+}
+
+data class BinaryNode<T>(val key: T, var left: BinaryNode<T>? = null, var right: BinaryNode<T>? = null) {
+    override fun toString(): String {
+        return "[$key](L[$left], R[$right])"
+    }
+
+    fun children(): List<BinaryNode<T>> {
+        val children = mutableListOf<BinaryNode<T>>()
+        if (left != null) children.add(left!!)
+        if (right != null) children.add(right!!)
+        return children
+    }
+
+    fun getAllLeafNodes(): Set<BinaryNode<T>> {
+        val leafBinaryNodes: MutableSet<BinaryNode<T>> = HashSet()
+        if (this.left == null && this.right == null) {
+            leafBinaryNodes.add(this)
+        } else {
+            for (child in this.children()) {
+                leafBinaryNodes.addAll(child.getAllLeafNodes())
+            }
+        }
+        return leafBinaryNodes
+    }
+
+    fun keys(): List<T> {
+        val keys: MutableList<T> = ArrayList()
+        keys.add(this.key)
+        if (left != null) {
+            keys.addAll(left!!.keys())
+        }
+        if (right != null)
+            keys.addAll(right!!.keys())
+        return keys
+    }
+
 }

@@ -64,8 +64,6 @@ class Matrix<T> : ArrayList<ArrayList<T>>() {
         return result
     }
 
-
-
     fun isAtTop(current: Coords, element: T): Boolean {
         return isAt(current, element, Move.UP)
     }
@@ -106,6 +104,19 @@ enum class Move(val to: Coords) {
         fun straightValues(): List<Move> {
             return listOf(UP, DOWN, LEFT, RIGHT)
         }
+
     }
 
+    fun turnRight() : Move {
+        return when(this) {
+            RIGHT -> DOWN
+            DOWN -> LEFT
+            LEFT -> UP
+            UP -> RIGHT
+            UP_RIGHT -> DOWN_RIGHT
+            DOWN_RIGHT -> DOWN_LEFT
+            DOWN_LEFT -> UP_LEFT
+            UP_LEFT -> UP_RIGHT
+        }
+    }
 }

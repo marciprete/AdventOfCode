@@ -1,6 +1,7 @@
 package days
 
 import data.MultiNode
+import data.BinaryNode
 import it.senape.aoc.utils.Day
 
 
@@ -40,21 +41,21 @@ class Day07 : Day(2024, 7) {
     private fun getValidResults(equations: List<Pair<Long, List<Long>>>): MutableList<Long> {
         val valid = mutableListOf<Long>()
         equations.forEach { equation ->
-            val node = Node(equation.second[0])
-            toTree(node, equation.second.subList(1, equation.second.size))
-            if (node.getAllLeafNodes().map { it.key }.contains(equation.first)) {
+            val binaryNode = BinaryNode(equation.second[0])
+            toTree(binaryNode, equation.second.subList(1, equation.second.size))
+            if (binaryNode.getAllLeafNodes().map { it.key }.contains(equation.first)) {
                 valid.add(equation.first)
             }
         }
         return valid
     }
 
-    private fun toTree(root: Node, values: List<Long>) {
+    private fun toTree(root: BinaryNode<Long>, values: List<Long>) {
         if(values.isNotEmpty()) {
             val sum = root.key + values[0]
             val prod = root.key * values[0]
-            root.left = Node(sum)
-            root.right = Node(prod)
+            root.left = BinaryNode(sum)
+            root.right = BinaryNode(prod)
             if (values.size > 1) {
                 toTree(root.left!!, values.subList(1, values.size))
                 toTree(root.right!!, values.subList(1, values.size))
@@ -83,37 +84,6 @@ class Day07 : Day(2024, 7) {
     }
 
 
-
-
-}
-
-
-
-data class Node(val key: Long, var left: Node? = null, var right: Node? = null) {
-    override fun toString(): String {
-        return "[$key]\n" +
-                "   ->$left\n" +
-                "   ->$right\n"
-    }
-
-    fun children(): List<Node> {
-        val children = mutableListOf<Node>()
-        if (left != null) children.add(left!!)
-        if (right != null) children.add(right!!)
-        return children
-    }
-
-    fun getAllLeafNodes(): Set<Node> {
-        val leafNodes: MutableSet<Node> = HashSet()
-        if (this.left == null && this.right == null) {
-            leafNodes.add(this)
-        } else {
-            for (child in this.children()) {
-                leafNodes.addAll(child.getAllLeafNodes())
-            }
-        }
-        return leafNodes
-    }
 }
 
 fun main() = Day.solve(Day07(), 3749L, 11387L)

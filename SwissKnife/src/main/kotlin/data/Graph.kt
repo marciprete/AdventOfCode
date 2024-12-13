@@ -136,13 +136,10 @@ class AdjacencyListGraph<T>: Graph<T> {
     override fun depthFirst() {
         val discoveredMap: MutableMap<Vertex<T>, Boolean> = mutableMapOf()
 
-//        val start = System.nanoTime()
         getVertices().forEach { vertex ->
             discoveredMap[vertex] = false
             dfs(this, vertex, discoveredMap)
         }
-        val end = System.nanoTime()
-//        println("${(end - start)/1000} ms")
         discoveredMap.forEach(::println)
     }
 
