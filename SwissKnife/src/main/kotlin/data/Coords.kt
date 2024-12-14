@@ -5,7 +5,7 @@ package data
  * @author Michele Arciprete
  * created on 05/01/2024
  */
-class Coords(val x: Int, val y: Int) {
+class Coords(val x: Int, val y: Int) : Comparable<Coords> {
 
     companion object {
         fun fromString(str: String): Coords {
@@ -36,6 +36,22 @@ class Coords(val x: Int, val y: Int) {
 
     fun distance(to: Coords): Coords {
         return Coords(to.x - this.x, to.y - this.y)
+    }
+
+    fun teleport(speed: Coords, time: Int, edge: Coords): Coords {
+        val toX = x + time * if (speed.x > 0) speed.x else edge.x + speed.x
+        val toY = y + time * if (speed.y > 0) speed.y else edge.y + speed.y
+        val x = if (toX < edge.x) toX else toX.rem(edge.x)
+        val y = if (toY < edge.y) toY else toY.rem(edge.y)
+        return Coords(x, y)
+    }
+
+    override fun compareTo(other: Coords): Int {
+        return if (y != other.y) {
+            y.compareTo(other.y)
+        } else {
+            x.compareTo(other.x)
+        }
     }
 
     override fun equals(other: Any?): Boolean {
