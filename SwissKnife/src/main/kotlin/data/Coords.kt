@@ -20,10 +20,11 @@ class Coords(val x: Int, val y: Int) : Comparable<Coords> {
     /**
      * Get the direction from the char and returns a Coords with the new position from this
      */
-    fun moveToCharAndGetPosition(char: Char): Coords {
+    fun moveToCharAndGetPosition(char: Char, euclidean: Boolean = true): Coords {
+        val x = if (euclidean) 1 else -1
         return when (char) {
-            '^' -> Coords(this.x, this.y + 1)
-            'v' -> Coords(this.x, this.y - 1)
+            '^' -> Coords(this.x, this.y + x)
+            'v' -> Coords(this.x, this.y - x)
             '>' -> Coords(this.x + 1, this.y)
             '<' -> Coords(this.x - 1, this.y)
             else -> error("Unexpected")

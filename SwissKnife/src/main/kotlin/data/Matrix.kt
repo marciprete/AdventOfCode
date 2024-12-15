@@ -15,6 +15,12 @@ class Matrix<T> : ArrayList<ArrayList<T>>() {
         return null
     }
 
+    fun putAt(coords: Coords, element: T) {
+        if(exists(coords)) {
+            this[coords.y][coords.x] = element
+        }
+    }
+
     fun findFirst(element: T) : Coords? {
         for(y in 0 until this.size) {
             for(x in 0 until this[y].size) {
@@ -105,6 +111,15 @@ enum class Move(val to: Coords) {
             return listOf(UP, DOWN, LEFT, RIGHT)
         }
 
+        fun fromChar(c: Char): Move {
+            return when (c) {
+                '^' -> UP
+                'v' -> DOWN
+                '>' -> RIGHT
+                '<' -> LEFT
+                else -> error("Unexpected")
+            }
+        }
     }
 
     fun turnRight() : Move {
@@ -118,5 +133,9 @@ enum class Move(val to: Coords) {
             DOWN_LEFT -> UP_LEFT
             UP_LEFT -> UP_RIGHT
         }
+    }
+
+    fun isVertical(): Boolean {
+        return this == UP || this == DOWN
     }
 }
