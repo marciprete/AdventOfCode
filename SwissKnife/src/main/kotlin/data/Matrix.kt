@@ -4,6 +4,19 @@ typealias ElementAt<T> = Pair<T, Coords>
 
 class Matrix<T> : ArrayList<ArrayList<T>>() {
 
+    companion object {
+        fun buildCharMatrix(input: List<String>): Matrix<Char> {
+            val matrix = Matrix<Char>()
+            input.forEachIndexed { y, line ->
+                matrix.add(ArrayList())
+                line.forEachIndexed { _, char ->
+                    matrix[y].add(char)
+                }
+            }
+            return matrix
+        }
+    }
+
     fun exists(coords: Coords): Boolean {
         return coords.x >= 0 && coords.y >= 0 && coords.x < this.size && coords.y < this[0].size
     }
@@ -30,6 +43,15 @@ class Matrix<T> : ArrayList<ArrayList<T>>() {
             }
         }
         return null
+    }
+
+    fun getSiblings(start: Coords): List<Coords> {
+        val siblings = mutableListOf<Coords>()
+        Move.straightValues().forEach { direction ->
+            val sibling = start.move(direction.to)
+            this.getAt(sibling)?.let { siblings.add(sibling) }
+        }
+        return siblings
     }
 
     override fun clone(): Matrix<T> {

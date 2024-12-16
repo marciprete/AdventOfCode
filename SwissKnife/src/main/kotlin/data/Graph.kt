@@ -144,7 +144,6 @@ class AdjacencyListGraph<T>: Graph<T> {
     }
 
     private fun dfs(graph: Graph<T>, vertex: Vertex<T>, discoveredMap: MutableMap<Vertex<T>, Boolean>) {
-
         discoveredMap[vertex] = true
         graph.getEdges(vertex).forEach { edge ->
             if (discoveredMap[edge.to] == false) {

@@ -39,6 +39,30 @@ class Coords(val x: Int, val y: Int) : Comparable<Coords> {
         return Coords(to.x - this.x, to.y - this.y)
     }
 
+    /**
+     * Get the relative position of the passed coords
+     *
+     */
+    fun getRelativeDirection(coords: Coords): Move {
+        val dy = coords.y - this.y
+        val dx = coords.x - this.x
+        return when {
+            dx == 1 && dy == 0 -> Move.RIGHT
+            dx == -1 && dy == 0 -> Move.LEFT
+
+            dx == 0 && dy == 1 -> Move.DOWN
+            dx == 0 && dy == -1 -> Move.UP
+
+            dx == 1 && dy == 1 -> Move.DOWN_RIGHT
+            dx == -1 && dy == 1 -> Move.DOWN_LEFT
+
+            dx == 1 && dy == -1 -> Move.UP_RIGHT
+            dx == -1 && dy == -1 -> Move.UP_LEFT
+
+            else -> error("Unexpected")
+        }
+    }
+
     fun teleport(speed: Coords, time: Int, edge: Coords): Coords {
         val toX = x + time * if (speed.x > 0) speed.x else edge.x + speed.x
         val toY = y + time * if (speed.y > 0) speed.y else edge.y + speed.y
