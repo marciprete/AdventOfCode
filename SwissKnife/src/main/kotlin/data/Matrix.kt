@@ -2,7 +2,7 @@ package data
 
 typealias ElementAt<T> = Pair<T, Coords>
 
-class Matrix<T> : ArrayList<ArrayList<T>>() {
+open class Matrix<T> : ArrayList<ArrayList<T>>() {
 
     companion object {
         fun buildCharMatrix(input: List<String>): Matrix<Char> {
@@ -11,6 +11,17 @@ class Matrix<T> : ArrayList<ArrayList<T>>() {
                 matrix.add(ArrayList())
                 line.forEachIndexed { _, char ->
                     matrix[y].add(char)
+                }
+            }
+            return matrix
+        }
+
+        fun buildEmptyMatrix(size: Int): Matrix<Char> {
+            val matrix = Matrix<Char>()
+            for (y in 0 until size) {
+                matrix.add(ArrayList())
+                for (x in 0 until size) {
+                    matrix[y].add('.')
                 }
             }
             return matrix
@@ -45,7 +56,7 @@ class Matrix<T> : ArrayList<ArrayList<T>>() {
         return null
     }
 
-    fun getSiblings(start: Coords): List<Coords> {
+    open fun getSiblings(start: Coords): List<Coords> {
         val siblings = mutableListOf<Coords>()
         Move.straightValues().forEach { direction ->
             val sibling = start.move(direction.to)
@@ -115,6 +126,7 @@ class Matrix<T> : ArrayList<ArrayList<T>>() {
         }
         return this.getAt(pair.first) == element && this.getAt(pair.second) == element
     }
+
 
 }
 

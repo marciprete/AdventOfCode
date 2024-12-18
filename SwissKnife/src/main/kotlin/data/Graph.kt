@@ -20,15 +20,19 @@ interface Graph<T> {
      */
     fun getVertices(): List<Vertex<T>>
 
-    fun addDirectedEdge(from: Vertex<T>, to: Vertex<T>, weight: Double?)
-    fun addUndirectedEdge(from: Vertex<T>, to: Vertex<T>, weight: Double?)
+    fun get(data: T): Vertex<T>?
+    fun remove(data: Vertex<T>): Boolean
+
+    fun addDirectedEdge(from: Vertex<T>, to: Vertex<T>, weight: Double? = null)
+    fun addUndirectedEdge(from: Vertex<T>, to: Vertex<T>, weight: Double? = null)
     fun getEdges(vertex: Vertex<T>): List<Edge<T>>
     fun getWeightBetweenNodes(from: Vertex<T>, to: Vertex<T>): Double?
 
     fun add(type: EdgeType, from: Vertex<T>, to: Vertex<T>, weight: Double?)
 
     fun depthFirst()
-    fun breadthFirst(root: Vertex<T>)
+    fun breadthFirst(root: Vertex<T>): Map<T, Double>
+    fun breadthFirst(root: Vertex<T>, destination: T): Double?
     fun dijkstra(from: Vertex<T>, to: Vertex<T>): Double
     fun nearestNeighbour(): Pair<List<Edge<T>>, Double>
     fun farthestNeighbour(): Pair<List<Edge<T>>, Double>
@@ -84,6 +88,18 @@ class AdjacencyListGraph<T>: Graph<T> {
 
     override fun getVertices(): List<Vertex<T>> {
         return LinkedList(adjacencyList.keys)
+    }
+
+    override fun get(data: T): Vertex<T>? {
+        return getVertices().find { it.data == data }
+    }
+
+    override fun remove(data: Vertex<T>): Boolean {
+        adjacencyList.values.forEach { edges ->
+            edges.removeIf { it.to == data || it.from == data }
+        }
+        return adjacencyList.remove(data) != null
+
     }
 
     override fun createVertex(data: T): Vertex<T> {
@@ -152,7 +168,11 @@ class AdjacencyListGraph<T>: Graph<T> {
         }
     }
 
-    override fun breadthFirst(root: Vertex<T>) {
+    override fun breadthFirst(root: Vertex<T>, destination: T): Double? {
+        return breadthFirst(root)[destination]
+    }
+
+    override fun breadthFirst(root: Vertex<T>): Map<T, Double> {
         var queue: Queue<Vertex<T>> = LinkedList()
         var distances: MutableMap<Vertex<T>, Pair<Vertex<T>?, Double>> = mutableMapOf()
 
@@ -166,14 +186,13 @@ class AdjacencyListGraph<T>: Graph<T> {
         while (queue.isNotEmpty()) {
             val current = queue.poll()
             adjacencyList[current]?.forEach { edge ->
-                println("Current edge: ${edge.to.data}")
                 if (distances[edge.to]?.second == Double.POSITIVE_INFINITY) {
                     distances[edge.to] = Pair(current, distances[current]!!.second + 1)
                     queue.add(edge.to)
                 }
             }
         }
-        distances.forEach { edge, p -> println("${edge.data} [${p.second}]") }
+        return distances.map { (edge, p) -> edge.data to p.second }.toMap()
     }
 
     override fun dijkstra(from: Vertex<T>, to: Vertex<T>): Double {
@@ -211,6 +230,7 @@ class AdjacencyListGraph<T>: Graph<T> {
         while (node != from) {
             node = distances[node]?.first!!
         }
+
         return distances[to]!!.second
     }
 

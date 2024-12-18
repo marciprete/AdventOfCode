@@ -63,6 +63,8 @@ class Coords(val x: Int, val y: Int) : Comparable<Coords> {
         }
     }
 
+
+
     fun teleport(speed: Coords, time: Int, edge: Coords): Coords {
         val toX = x + time * if (speed.x > 0) speed.x else edge.x + speed.x
         val toY = y + time * if (speed.y > 0) speed.y else edge.y + speed.y
