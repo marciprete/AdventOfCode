@@ -1,89 +1,79 @@
 package days
 
 import data.*
+import data.Maze.Companion.SPACE
 import it.senape.aoc.utils.Day
 import java.util.*
 
+typealias WeightedEdge = Pair<Coords?, Double>
 
 class Day16 : Day(2024, 16) {
-    val wall = '#'
-    val space = '.'
     override fun part1(input: List<String>): Any {
-        val matrix = Matrix.buildCharMatrix(input)
-        val direction = Move.RIGHT
-        val startPosition = matrix.findFirst('S')!!
+        val maze = Maze(input)
+        val startPosition = maze.findFirst('S')!!
+        val endPosition = maze.findFirst('E')!!
+        //731520 too high
+        val dijkstra = dijkstra(maze, startPosition, endPosition)
+        println(dijkstra)
+        return dijkstra.toInt()
+    }
 
 
-        val visited = mutableSetOf<Coords>()
-        var queue: Queue<Coords> = LinkedList()
-        queue.add(startPosition)
-        visited.add(startPosition)
+    fun dijkstra(maze: Maze, start: Coords, end: Coords): Double {
+        var distances: MutableMap<Coords, WeightedEdge> = mutableMapOf()
+        var queue: LinkedList<Coords> = LinkedList()
+
+        maze.findAll(SPACE).forEach { vertex ->
+            //inizializzo tutte le distanze a infinito
+            distances[vertex] = WeightedEdge(null, Double.POSITIVE_INFINITY)
+            //aggiungo alla coda di esecuzione
+        }
+        distances[end] = WeightedEdge(null, Double.POSITIVE_INFINITY)
+        queue.add(start)
+
+        //prendo l'origine e setto la distanza a 0
+        var current = start
+        distances[current] = Pair(null, 0.0)
+        var visited: MutableSet<Coords> = mutableSetOf()
+
         while (queue.isNotEmpty()) {
-            val pos = queue.poll()
-            for (step in matrix.getSiblings(pos)) {
-                if (!visited.contains(step)) {
-                    visited.add(step)
-                    queue.add(step)
+            current = queue.poll()
+            visited.add(current)
+            //per ogni percorso dal corrente calcolo la distanza minore
+            val sortedSiblings = maze.getSiblings(current).sortedBy { getWeight(distances[current]!!.first, current, it) }
+            sortedSiblings.forEach { sibling ->
+                //verifico che non sia stato ancora attraversato
+                if (!visited.contains(sibling)) {
 
+                    var distance = distances[current]!!.second + Math.min(getWeight(distances[current]!!.first, current, sibling),
+                        distances[sibling]!!.second)
+                    if (distance < distances[sibling]!!.second) {
+                        distances[sibling] = Pair(current, distance)
+                    }
+                    queue.push(sibling)
                 }
             }
         }
-
-
-
-
-
-
-
-
-//        val spaces = matrix.findAll('.')
-//        val end = matrix.findFirst('E')!!
-//
-//        var next = startPosition
-//        val root = Vertex(0, startPosition)
-
-
-        val graph = AdjacencyListGraph<Coords>()
-        matrix.findAll('.').forEach { position ->
-            if(isNode(position, matrix)) {
-                graph.createVertex(position)
-            }
+        var node = end
+        while (node != start) {
+            node = distances[node]?.first!!
         }
-        val nodes = graph.getVertices().sortedBy { it.data }
-        println(startPosition.getRelativeDirection(startPosition.move(Move.RIGHT.to)))
 
-        printSiblings(startPosition, matrix)
-
-
-        return 0
+        return distances[end]!!.second
     }
 
-    fun printSiblings(next: Coords, matrix: Matrix<Char>) {
-        val siblings = matrix.getSiblings(next)
-        if (siblings.isNotEmpty()) {
-            siblings.forEach { sibling ->
-                if(matrix.getAt(sibling) != wall) {
-                    print("-> ${printSiblings(sibling, matrix)}")
-                }
-            }
-        } else {
-            println("")
+
+
+    private fun getWeight(prev: Coords?, current: Coords, next: Coords): Double {
+        val incoming = prev?.getRelativeDirection(current) ?: Move.RIGHT
+        val outcoming = current.getRelativeDirection(next)
+        var weight = 1.0
+        if (incoming != outcoming) {
+            weight = 1001.0
         }
+//        println("$prev -> $current -> $next --- $incoming -> $outcoming = $weight")
+        return weight
     }
-
-    fun isNode(coords: Coords, matrix: Matrix<Char>): Boolean {
-        val up = matrix.getAt(coords.move(Move.UP.to)).takeIf { it != wall }
-        val right = matrix.getAt(coords.move(Move.RIGHT.to)).takeIf { it != wall }
-        val bottom = matrix.getAt(coords.move(Move.DOWN.to)).takeIf { it != wall }
-        val left = matrix.getAt(coords.move(Move.LEFT.to)).takeIf { it != wall }
-        return (up != null && right != null) ||
-                (right != null && bottom != null) ||
-                (bottom != null && left != null) ||
-                (left != null && up != null)
-    }
-
-
-
 
     override fun part2(input: List<String>): Any {
         return 0

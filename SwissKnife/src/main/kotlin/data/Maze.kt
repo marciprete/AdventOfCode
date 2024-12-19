@@ -1,11 +1,15 @@
 package data
 
 import java.util.*
+import kotlin.math.min
 
 
 class Maze(size: Int) : Matrix<Char>() {
 
-    val wall = '#'
+    companion object {
+        const val WALL = '#'
+        const val SPACE = '.'
+    }
 
     init {
         for (y in 0 until size) {
@@ -16,12 +20,20 @@ class Maze(size: Int) : Matrix<Char>() {
         }
     }
 
+    constructor(input: List<String>) : this(input.size) {
+        input.forEachIndexed { y, line ->
+            line.forEachIndexed { x, char ->
+                this[y][x] = char
+            }
+        }
+    }
+
 
     fun breadthFirst(root: Coords): Map<Coords, Double> {
         var queue: Queue<Coords> = LinkedList()
         var distances: MutableMap<Coords, Pair<Coords?, Double>> = mutableMapOf()
 
-        this.findAll('.').forEach { vertex ->
+        this.findAll(SPACE).forEach { vertex ->
             distances[vertex] = Pair(null, Double.POSITIVE_INFINITY)
         }
 
@@ -41,6 +53,6 @@ class Maze(size: Int) : Matrix<Char>() {
     }
 
     override fun getSiblings(coords: Coords): List<Coords> {
-        return super.getSiblings(coords).filter { this.getAt(it) != wall }
+        return super.getSiblings(coords).filter { this.getAt(it) != WALL }
     }
 }
