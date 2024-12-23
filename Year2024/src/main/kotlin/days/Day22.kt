@@ -18,12 +18,12 @@ class Day22 : Day(2024, 22) {
             secrets.add(secret)
         }
         val sum = secrets.sum()
-        println("Sum: $sum")
         return sum
     }
 
     override fun part2(input: List<String>): Any {
         val secrets = mutableSetOf<Long>()
+        val listOfStrings = mutableListOf<Map<String, Int>>()
         var num = 123L
         val inputs = input.map { it.toLong() }
         inputs.forEach { num ->
@@ -37,13 +37,25 @@ class Day22 : Day(2024, 22) {
                 secret = mixAndPrune(secret * 2048, secret)
                 oneDigits.add(secret.toString().last().digitToInt())
             }
-            val strings = oneDigits.windowed(2).map { it[1] - it[0] }
-            println("OneDigits: ${strings.windowed(4).map { it.joinToString("") }}")
-
-            println()
+            val changes = oneDigits.windowed(2).map { it[1] - it[0] }
+            val changeBananas = mutableMapOf<String, Int>()
+            changes.windowed(4).forEachIndexed { idx, change ->
+                val key = change.joinToString("")
+                if (changeBananas[key] == null) {
+                    changeBananas[key] = oneDigits[idx + 4]
+                }
+            }
+            listOfStrings.add(changeBananas)
             secrets.add(secret)
         }
-        return 0
+        val  maxSellableBananas = mutableMapOf<String, Int>()
+        listOfStrings.forEach { map ->
+            map.keys.forEach { string ->
+                maxSellableBananas[string] = (maxSellableBananas[string] ?: 0) + (map[string] ?: 0)
+            }
+        }
+
+        return maxSellableBananas.values.max().toLong()
     }
 
     fun mixAndPrune(num: Long, secret: Long): Long {
@@ -51,4 +63,4 @@ class Day22 : Day(2024, 22) {
     }
 }
 
-fun main() = Day.solve(Day22(), 37990510L, 10)
+fun main() = Day.solve(Day22(), 37990510L, 23L)
