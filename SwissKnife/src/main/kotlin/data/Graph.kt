@@ -36,6 +36,10 @@ interface Graph<T> {
     fun dijkstra(from: Vertex<T>, to: Vertex<T>): Double
     fun nearestNeighbour(): Pair<List<Edge<T>>, Double>
     fun farthestNeighbour(): Pair<List<Edge<T>>, Double>
+
+    fun getNeighbors(vertex: Vertex<T>): List<Vertex<T>>
+    fun getCliques(): List<Set<Vertex<T>>>
+
 }
 
 data class Vertex<T>(val index: Int, val data: T) {
@@ -309,6 +313,45 @@ class AdjacencyListGraph<T>: Graph<T> {
             zio.add(dist)
             return zio + maxDistance(dist.to, subset)
         }
+    }
+
+    override fun getNeighbors(vertex: Vertex<T>): List<Vertex<T>> {
+        return adjacencyList[vertex]?.map { it.to } ?: emptyList()
+    }
+
+    // Bron-Kerbosch algorithm
+    override fun getCliques(): List<Set<Vertex<T>>> {
+        val maximalCliques = mutableListOf<Set<Vertex<T>>>()
+
+        fun bronKerboschRecursive(
+            r: MutableSet<Vertex<T>>,
+            p: MutableSet<Vertex<T>>,
+            x: MutableSet<Vertex<T>>
+        ) {
+            if (p.isEmpty() && x.isEmpty()) {
+                maximalCliques.add(r.toSet()) // Found a maximal clique
+                return
+            }
+
+            val pivot = (p + x).firstOrNull() ?: return
+            val neighborsOfPivot = getNeighbors(pivot).toSet()
+
+            for (v in p.subtract(neighborsOfPivot)) {
+                val neighbors = getNeighbors(v).toSet()
+                bronKerboschRecursive(
+                    r.apply { add(v) },
+                    p.intersect(neighbors).toMutableSet(),
+                    x.intersect(neighbors).toMutableSet()
+                )
+                r.remove(v)
+                p.remove(v)
+                x.add(v)
+            }
+        }
+
+        val vertices = getVertices().toMutableSet()
+        bronKerboschRecursive(mutableSetOf(), vertices, mutableSetOf())
+        return maximalCliques
     }
 }
 
