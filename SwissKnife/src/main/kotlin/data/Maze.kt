@@ -28,6 +28,14 @@ class Maze(size: Int) : Matrix<Char>() {
         }
     }
 
+    override fun clone(): Maze {
+        val clonedMatrix = Maze(this.size)
+        this.forEachIndexed { i, row ->
+            clonedMatrix[i] = ArrayList(row)
+        }
+        return clonedMatrix
+    }
+
 
     fun breadthFirst(root: Coords): Map<Coords, Double> {
         var queue: Queue<Coords> = LinkedList()
@@ -45,7 +53,7 @@ class Maze(size: Int) : Matrix<Char>() {
 
         while (queue.isNotEmpty()) {
             val current = queue.poll()
-            this.getSiblings(current).forEach { edge ->
+            this.getFilteredSiblings(current).forEach { edge ->
                 if (distances[edge]?.second == Double.POSITIVE_INFINITY) {
                     distances[edge] = Pair(current, distances[current]!!.second + 1)
                     queue.add(edge)
@@ -95,7 +103,7 @@ class Maze(size: Int) : Matrix<Char>() {
         return distances[to]!!.second
     }
 
-    override fun getSiblings(coords: Coords): List<Coords> {
+    fun getFilteredSiblings(coords: Coords): List<Coords> {
         return super.getSiblings(coords).filter { this.getAt(it) != WALL }
     }
 }

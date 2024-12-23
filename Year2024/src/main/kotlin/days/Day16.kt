@@ -40,7 +40,7 @@ class Day16 : Day(2024, 16) {
             current = queue.poll()
             visited.add(current)
             //per ogni percorso dal corrente calcolo la distanza minore
-            val sortedSiblings = maze.getSiblings(current).sortedBy { getWeight(distances[current]!!.first, current, it) }
+            val sortedSiblings = maze.getFilteredSiblings(current).sortedBy { getWeight(distances[current]!!.first, current, it) }
             sortedSiblings.forEach { sibling ->
                 //verifico che non sia stato ancora attraversato
                 if (!visited.contains(sibling)) {
@@ -65,8 +65,8 @@ class Day16 : Day(2024, 16) {
 
 
     private fun getWeight(prev: Coords?, current: Coords, next: Coords): Double {
-        val incoming = prev?.getRelativeDirection(current) ?: Move.RIGHT
-        val outcoming = current.getRelativeDirection(next)
+        val incoming = prev?.getRelativeDirectionTo(current) ?: Move.RIGHT
+        val outcoming = current.getRelativeDirectionTo(next)
         var weight = 1.0
         if (incoming != outcoming) {
             weight = 1001.0

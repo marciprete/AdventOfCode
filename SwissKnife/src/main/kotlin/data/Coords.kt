@@ -43,7 +43,7 @@ class Coords(val x: Int, val y: Int) : Comparable<Coords> {
      * Get the relative position of the passed coords
      *
      */
-    fun getRelativeDirection(coords: Coords): Move {
+    fun getRelativeDirectionTo(coords: Coords): Move {
         val dy = coords.y - this.y
         val dx = coords.x - this.x
         return when {
@@ -59,7 +59,7 @@ class Coords(val x: Int, val y: Int) : Comparable<Coords> {
             dx == 1 && dy == -1 -> Move.UP_RIGHT
             dx == -1 && dy == -1 -> Move.UP_LEFT
 
-            else -> error("Unexpected")
+            else -> Move.DOWN_RIGHT
         }
     }
 
