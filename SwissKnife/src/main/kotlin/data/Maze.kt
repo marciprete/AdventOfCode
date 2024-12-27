@@ -1,10 +1,9 @@
 package data
 
 import java.util.*
-import kotlin.math.min
 
 
-class Maze(size: Int) : Matrix<Char>() {
+class Maze(width: Int, height: Int? = null) : Matrix<Char>() {
 
     companion object {
         const val WALL = '#'
@@ -12,9 +11,9 @@ class Maze(size: Int) : Matrix<Char>() {
     }
 
     init {
-        for (y in 0 until size) {
+        for (y in 0 until (height ?: width)) {
             this.add(ArrayList())
-            for (x in 0 until size) {
+            for (x in 0 until width) {
                 this[y].add('.')
             }
         }
