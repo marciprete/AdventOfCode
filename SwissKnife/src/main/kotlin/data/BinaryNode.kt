@@ -1,5 +1,8 @@
 package data
 
+/**
+ * My custom implementation of a Tree Data Structure
+ */
 data class MultiNode<T>(var key: T, val children: MutableList<MultiNode<T>> = mutableListOf()) {
     fun add(node: MultiNode<T>) {
         children.add(node)
@@ -15,6 +18,26 @@ data class MultiNode<T>(var key: T, val children: MutableList<MultiNode<T>> = mu
             }
         }
         return leafNodes
+    }
+
+    /**
+     * Finds a node in the tree with the given key.
+     * @param targetKey the key to search for.
+     * @return the node with the matching key, or null if not found.
+     */
+    fun get(targetKey: T): MultiNode<T>? {
+        if (this.key == targetKey) {
+            return this
+        }
+
+        for (child in children) {
+            val result = child.get(targetKey)
+            if (result != null) {
+                return result
+            }
+        }
+
+        return null
     }
 
     fun keys(): List<T> {

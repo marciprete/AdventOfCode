@@ -145,6 +145,10 @@ enum class Move(val to: Coords) {
             return listOf(UP, DOWN, LEFT, RIGHT)
         }
 
+        fun cornerValues(): List<Move> {
+            return listOf(UP_RIGHT, DOWN_LEFT, UP_LEFT, DOWN_RIGHT)
+        }
+
         fun fromChar(c: Char): Move {
             return when (c) {
                 '^' -> UP
