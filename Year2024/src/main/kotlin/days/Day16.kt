@@ -12,11 +12,36 @@ class Day16 : Day(2024, 16) {
         val maze = Maze(input)
         val startPosition = maze.findFirst('S')!!
         val endPosition = maze.findFirst('E')!!
-        //731520 too high
-        val dijkstra = dijkstra(maze, startPosition, endPosition)
-        println(dijkstra)
-        return dijkstra.toInt()
+
+
+
+//        //731520 too high
+//        val dijkstra = dijkstra(maze, startPosition, endPosition)
+//        println(dijkstra)
+//        return dijkstra.toInt()
+        return 0
     }
+
+    data class Step(val coords: Coords, val directionFrom: Move)
+
+//    fun toGraph(maze: Maze) : AdjacencyListGraph<Coords> {
+//        val startPosition = maze.findFirst('S')!!
+//        val visited = mutableSetOf<Coords>()
+//        val step = Step(startPosition, Move.RIGHT)
+//        val queue: Queue<Step> = LinkedList<Step>()
+//
+//        queue.add(step)
+//        while (queue.isNotEmpty()) {
+//            val current = queue.poll()
+//            visited.add(current.coords)
+//            val siblings = maze.getNonWallSiblings(current.coords)
+//            siblings.forEach { neighbor ->
+//                current.getRelativeDirectionTo(neighbor)
+//            }
+//        }
+//    }
+
+
 
 
     fun dijkstra(maze: Maze, start: Coords, end: Coords): Double {
@@ -40,11 +65,10 @@ class Day16 : Day(2024, 16) {
             current = queue.poll()
             visited.add(current)
             //per ogni percorso dal corrente calcolo la distanza minore
-            val sortedSiblings = maze.getFilteredSiblings(current).sortedBy { getWeight(distances[current]!!.first, current, it) }
+            val sortedSiblings = maze.getNonWallSiblings(current).sortedBy { getWeight(distances[current]!!.first, current, it) }
             sortedSiblings.forEach { sibling ->
                 //verifico che non sia stato ancora attraversato
                 if (!visited.contains(sibling)) {
-
                     var distance = distances[current]!!.second + Math.min(getWeight(distances[current]!!.first, current, sibling),
                         distances[sibling]!!.second)
                     if (distance < distances[sibling]!!.second) {
@@ -71,7 +95,6 @@ class Day16 : Day(2024, 16) {
         if (incoming != outcoming) {
             weight = 1001.0
         }
-//        println("$prev -> $current -> $next --- $incoming -> $outcoming = $weight")
         return weight
     }
 

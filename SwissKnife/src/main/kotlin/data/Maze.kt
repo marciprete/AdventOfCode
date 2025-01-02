@@ -52,7 +52,7 @@ class Maze(width: Int, height: Int? = null) : Matrix<Char>() {
 
         while (queue.isNotEmpty()) {
             val current = queue.poll()
-            this.getFilteredSiblings(current).forEach { edge ->
+            this.getNonWallSiblings(current).forEach { edge ->
                 if (distances[edge]?.second == Double.POSITIVE_INFINITY) {
                     distances[edge] = Pair(current, distances[current]!!.second + 1)
                     queue.add(edge)
@@ -102,7 +102,7 @@ class Maze(width: Int, height: Int? = null) : Matrix<Char>() {
         return distances[to]!!.second
     }
 
-    fun getFilteredSiblings(coords: Coords): List<Coords> {
+    fun getNonWallSiblings(coords: Coords): List<Coords> {
         return super.getSiblings(coords).filter { this.getAt(it) != WALL }
     }
 }

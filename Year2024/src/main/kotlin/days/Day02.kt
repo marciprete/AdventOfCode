@@ -15,7 +15,6 @@ class Day02 : Day(2024, 2) {
     }
 
     override fun part2(input: List<String>): Any {
-        println("--- part 2 ---")
         var counter = 0
         input.forEach { line ->
             val report = line.split(" ").map { it.toInt() }

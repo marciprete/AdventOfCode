@@ -9,18 +9,9 @@ import kotlin.collections.ArrayList
 
 class Day15 : Day(2024, 15) {
     override fun part1(input: List<String>): Any {
-        var top = true
-        val map = mutableListOf<String>()
-        val instructions = mutableListOf<String>()
-        for (row in input) {
-            if (row.isNotEmpty() && top) {
-                map.add(row)
-            } else if(row.isEmpty() && top) {
-                top = false
-            } else {
-                instructions.add(row)
-            }
-        }
+        val process = processInput(input)
+        val map = process.first
+        val instructions = process.second
         val matrix = parse(map)
         push(matrix, instructions)
         return matrix.findAll('O').sumOf { c -> c.y * 100 + c.x }
@@ -44,6 +35,22 @@ class Day15 : Day(2024, 15) {
         }
     }
 
+    private fun processInput(input: List<String>): Pair<List<String>, List<String>> {
+        val map = mutableListOf<String>()
+        val instructions = mutableListOf<String>()
+
+        var addingToMap = true
+        for (row in input) {
+            when {
+                row.isEmpty() -> addingToMap = false
+                addingToMap -> map.add(row)
+                else -> instructions.add(row)
+            }
+        }
+
+        return map to instructions
+    }
+
     private fun swap(robot: Coords, next: Coords, matrix: Matrix<Char>): Coords {
         matrix.putAt(next, '@')
         matrix.putAt(robot, '.')
@@ -62,18 +69,9 @@ class Day15 : Day(2024, 15) {
     }
 
     override fun part2(input: List<String>): Any {
-        var top = true
-        val map = mutableListOf<String>()
-        val instructions = mutableListOf<String>()
-        for (row in input) {
-            if (row.isNotEmpty() && top) {
-                map.add(row)
-            } else if(row.isEmpty() && top) {
-                top = false
-            } else {
-                instructions.add(row)
-            }
-        }
+        val process = processInput(input)
+        val map = process.first
+        val instructions = process.second
         val matrix = parse(map)
         val expanded = expand(matrix)
         expanded.forEach(::println)
